@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="card bg-light mb-3 col-8 offset-md-2 shadow-lg rounded">
+        <div class="card-header text-center"><h3>Lista de Usuarios</h3></div>
+        <div class="card-body">
+          <table id="tabla" class="table table-hover">
+            <thead class="thead-dark">
+                <th>Cedula</th>
+                <th>Nombre</th>
+                <th>ciudad</th>
+                <th>departamento</th>
+            </thead>
+            <tbody>
+    
+            </tbody>
+        </table>
+        <hr>
+
+        <p id="total1" class="font-weight-bold"></p>
+        <p id="total2" class="font-weight-bold"></p>
+        <p id="total" class="font-weight-bold">REGISTROS TOTAL= </p>
+        
+        </div>
+      </div>  
+    </div>
+  </div>
+    <script src="jquery-2.2.3.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+</body>
+</html>
+
+<script>
+    $( document ).ready(function() {
+   $('#sede').change(function(){ carreras($(this).val())});
+   
+   sedes();
+
+});
+
+function sedes()
+{
+  $.ajax({
+   dataType: "json",
+   method: "GET",
+  
+  'success':function(datos){
+        var data=datos['Users'];
+        var cont= 0;
+        var cont1= 0;
+        var cont2= 0;
+        var ciudades = [];
+        var cant_ciudad=[];
+        var departamentos =[];
+ 
+        
+        var exist= 0; 
+
+        for(i in data){
+          
+            $('#tabla').append('<tr><td>'+data[i].cedula+'</td><td>'+data[i].firstName+'</td><td>'+data[i].ciudad+'</td><td>'+data[i].departamento+'</td></tr>');
+          cont++;
+          exist= 0; 
+          for(e in ciudades){
+                 // alert(data[i].ciudad);
+                  if(ciudades[e]==data[i].ciudad){
+                      
+                  }
+                  else{
+                   exist = 1;
+                  }
+
+                  
+                  
+
+          }
+
+
+          if(exist==0){
+            var cant = ciudades.length; 
+           
+
+            if(cant ==0){
+              
+              ciudades[cant]=data[i].ciudad;
+              if(cant_ciudad[cant]==null){
+                cant_ciudad[cant]= 1;
+              }else{
+                cant_ciudad[cant]=cant_ciudad[cant] + 1;
+              }
+             
+
+            }else{
+              cant = cant + 1
+              ciudades[cant]=data[i].ciudad; 
+              if(cant_ciudad[cant]==null){
+                cant_ciudad[cant]= 1;
+              }else{
+                cant_ciudad[cant]=cant_ciudad[cant] + 1;
+              }
+            }
+            
+            
+            
+            
+           }
+
+
+          if (data[i].ciudad == 'Cúcuta') {
+            cont1 ++;
+            
+        } else if(data[i].ciudad == 'Seleccione Departamento') {
+          cont2 ++;
+        }
+
+
+        } 
+        var total = "";
+        for(e in ciudades){ 
+          total=total + "<br>"+ciudades[e] + ": , "+cant_ciudad[e] +"<br>";
+
+         }
+
+
+        $('#total1').append(total);
+        //$('#total2').append('Seleccione Departamento= '+cont2);
+
+        $('#total').append(cont);
+  },      
+  'url':'t-t-taxi-export-1.json',
+  'error': function(){
+    console.log('ERROR DE CONEXION','e'); 
+    }
+   });
+} 
+</script>
